@@ -1,0 +1,119 @@
+.total-page {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--cream);
+    width: 100vw;
+    box-sizing: border-box;
+}
+
+.home-page {
+    flex-grow: 1;
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-sizing: border-box;
+    width: calc(100% - 250px);
+    /* 사이드바 제외 나머지 가로 꽉 차게 */
+}
+
+.home-page h1 {
+    font-size: 2rem;
+    color: var(--blood-red);
+    margin-bottom: 1rem;
+}
+
+.goal-of-month {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--blushed-brick);
+    color: white;
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.goal-of-month h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    font-weight: bold;
+    color: white;
+}
+
+.goal-of-month p {
+    font-size: 0.9rem;
+    color: var(--almond-cream);
+}
+
+.progress-bar-container {
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    margin-top: 1.5rem;
+    width: 100%;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: white;
+    border-radius: 6px;
+}
+
+.recent-reviews {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.recent-reviews::before {
+    content: "최신 리뷰";
+    font-size: 1.2rem;
+    color: var(--blood-red);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.recent-review-items {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    grid-template-rows: auto auto auto;
+    column-gap: 1.5rem;
+    row-gap: 0.2rem;
+    background: var(--almond-cream);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--dusty-taupe);
+    align-items: flex-start;
+}
+
+.recent-review-items img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--blushed-brick);
+    background-color: white;
+    grid-row: 1 / 4;
+}
+
+.recent-review-items-nickname {
+    font-weight: bold;
+    color: var(--blood-red);
+    font-size: 1rem;
+}
+
+.recent-review-items-book-name {
+    font-size: 0.85rem;
+    color: var(--mauve-bark);
+}
+
+.recent-review-items-reivew {
+    font-size: 0.95rem;
+    color: var(--mauve-bark);
+    line-height: 1.5;
+    margin-top: 0.5rem;
+}

@@ -1,0 +1,72 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+
+  font-size: 0.75rem;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --blood-red: #8c1c13ff;
+  --blushed-brick: #bf4342ff;
+  --cream : rgb(248, 243, 236);
+  --almond-cream: #e7d7c1ff;
+  --dusty-taupe: #a78a7fff;
+  --mauve-bark: #735751ff;
+
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2 {
+  margin: 0;
+  padding: 0;
+  color: var(--blood-red);
+  border: none;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: var(--mauve-bark);
+  text-decoration: none;
+}
+
+a:hover {
+  font-weight: bold;
+  color: var(--blood-red);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  place-items: center;
+  min-height: 100vh;
+}
+
+button {
+  border-radius: 6px;
+  border: 1px solid transparent;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {}

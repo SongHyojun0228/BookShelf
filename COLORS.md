@@ -1,0 +1,5 @@
+-blood-red: #8c1c13ff;
+--blushed-brick: #bf4342ff;
+--almond-cream: #e7d7c1ff;
+--dusty-taupe: #a78a7fff;
+--mauve-bark: #735751ff;
