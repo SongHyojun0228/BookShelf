@@ -1,0 +1,246 @@
+.review-modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 650px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.review-modal-content .modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--almond-cream);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-modal-content .modal-header h2 {
+    font-size: 1.3rem;
+    color: var(--blood-red);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.review-book-preview {
+    margin: 1.5rem;
+    padding: 1.5rem;
+    background-color: var(--cream);
+    border-radius: 8px;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.review-book-preview .preview-cover {
+    width: 60px;
+    height: 85px;
+    min-width: 60px;
+}
+
+.review-section {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.review-label {
+    font-weight: bold;
+    color: var(--blood-red);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.review-label .required {
+    color: #E24A4A;
+}
+
+.review-label .optional {
+    color: var(--dusty-taupe);
+    font-weight: normal;
+    font-size: 0.85rem;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.star-btn {
+    background: none;
+    border: 1px solid var(--dusty-taupe);
+    border-radius: 4px;
+    font-size: 1.5rem;
+    color: var(--dusty-taupe);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.star-btn.filled {
+    color: #F5A623;
+    border-color: #F5A623;
+}
+
+.rating-score {
+    font-weight: bold;
+    color: #F5A623;
+    font-size: 1.1rem;
+}
+
+.textarea-container {
+    position: relative;
+    border: 1px solid var(--dusty-taupe);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.textarea-container textarea {
+    width: 100%;
+    height: 150px;
+    padding: 1rem;
+    border: none;
+    resize: none;
+    outline: none;
+    font-size: 0.95rem;
+    color: var(--mauve-bark);
+    line-height: 1.6;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.char-count {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 0.85rem;
+    color: var(--dusty-taupe);
+}
+
+.review-bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.photo-attachment-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.photo-boxes {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.photo-add-btn,
+.photo-preview-box {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.photo-add-btn {
+    border: 1px solid var(--dusty-taupe);
+    background-color: white;
+    color: var(--dusty-taupe);
+    cursor: pointer;
+    gap: 0.2rem;
+}
+
+.photo-add-btn span {
+    font-size: 0.8rem;
+}
+
+.photo-preview-box {
+    background-color: var(--almond-cream);
+    border: 1px solid transparent;
+}
+
+.delete-photo-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--blood-red);
+    color: white;
+    border: none;
+    font-size: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.spoiler-toggle-container {
+    background-color: var(--cream);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+}
+
+.spoiler-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    color: var(--blood-red);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.toggle-switch {
+    width: 44px;
+    height: 24px;
+    background-color: var(--dusty-taupe);
+    border-radius: 12px;
+    position: relative;
+    transition: background-color 0.3s;
+}
+
+.toggle-switch.on {
+    background-color: var(--blood-red);
+}
+
+.toggle-knob {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+}
+
+.toggle-switch.on .toggle-knob {
+    transform: translateX(20px);
+}
+
+.review-actions {
+    padding: 1.5rem;
+    border-top: 1px solid var(--almond-cream);
+    margin: 0;
+}

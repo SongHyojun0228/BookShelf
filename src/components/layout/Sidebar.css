@@ -1,6 +1,8 @@
 .side-bar {
     min-width: 250px;
     height: 100vh;
+    position: sticky;
+    top: 0;
     border-right: 1px solid var(--dusty-taupe);
     display: flex;
     flex-direction: column;

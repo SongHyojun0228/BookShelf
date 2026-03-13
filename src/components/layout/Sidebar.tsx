@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import './Sidebar.css'
 
 function Sidebar() {
@@ -6,12 +7,12 @@ function Sidebar() {
             <div className='side-bar-menu'>
                 <h1 className="side-bar-items">📖 Book Shelf</h1>
                 <hr className="side-bar-divider" />
-                <a className="side-bar-items">홈</a>
-                <a className="side-bar-items">도서 검색</a>
-                <a className="side-bar-items">내 서재</a>
-                <a className="side-bar-items">독서 통계</a>
-                <a className="side-bar-items">커뮤니티</a>
-                <a className="side-bar-items">프로필</a>
+                <Link to='/' className="side-bar-items">홈</Link>
+                <Link to='/search' className="side-bar-items">도서 검색</Link>
+                <Link to='/library' className="side-bar-items">내 서재</Link>
+                <Link to='/' className="side-bar-items">독서 통계</Link>
+                <Link to='/' className="side-bar-items">커뮤니티</Link>
+                <Link to='/' className="side-bar-items">프로필</Link>
                 <div className="side-bar-items">
                     <img alt='프로필 사진' />
                     <div className='side-bar-items-profile-info'>
