@@ -146,7 +146,10 @@
     margin: 0;
 }
 
-.myshelf-book-card .book-author {
+.myshelf-book-card .book-author,
+.myshelf-book-card .book-genre,
+.myshelf-book-card .book-publisher
+ {
     font-size: 0.9rem;
     color: var(--mauve-bark);
     margin: 0;

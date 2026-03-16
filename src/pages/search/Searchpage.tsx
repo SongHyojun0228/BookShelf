@@ -6,7 +6,7 @@ import Addbookmodal from '../../components/modal/Addbookmodal';
 import '../../App.css'
 import './Searchpage.css'
 
-export const MOCK_CATEGORIES = ['전체', '소설', '자기계발', '과학', '역사', '에세이'];
+export const MOCK_CATEGORIES = ['전체', '소설', '자기계발', '과학', '역사', '경제', '에세이', '인문'];
 
 function Searchpage() {
 
@@ -17,9 +17,10 @@ function Searchpage() {
     const [isModalOn, setIsModalOn] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState("전체");
     const [ref, inView] = useInView();
+    const [selectedBook, setSelectedBook] = useState<any>(null);
 
     useEffect(() => {
-        // 센서가 무언가를 감지했고(inView), 로딩 중이 아니고, 화면에 이미 책이 있을 때-
+        // 센서가 무언가를 감지했고(inView), 로딩 중이 아니고, 화면에 이미 책이 있을 때
         if (inView && !isLoading && searchResults.length > 0) {
             setPage(prev => prev + 1);
         }
@@ -45,7 +46,7 @@ function Searchpage() {
 
         try {
             const ttbKey = 'ttbhyojun230011523001';
-            const url = `/aladin-api/ttb/api/ItemSearch.aspx?ttbkey=${ttbKey}&Query=${keyword}&QueryType=Keyword&MaxResults=30&start=${pageNum}&SearchTarget=Book&output=js&Version=20131101`;
+            const url = `/aladin-api/ttb/api/ItemSearch.aspx?ttbkey=${ttbKey}&Query=${keyword}&QueryType=Keyword&MaxResults=30&start=${pageNum}&SearchTarget=Book&output=js&Version=20131101&OptResult=itemPage`;
             const response = await fetch(url);
             const data = await response.json();
 
@@ -72,7 +73,7 @@ function Searchpage() {
         <div className='total-page'>
             <Sidebar />
 
-            {isModalOn ? <Addbookmodal onClose={() => setIsModalOn(false)} /> : null}
+            {isModalOn ? <Addbookmodal onClose={() => setIsModalOn(false)} book={selectedBook} /> : null}
 
             <div className='main-page search-page'>
                 <header className="search-header">
@@ -114,7 +115,6 @@ function Searchpage() {
                     <div className="search-results-list">
                         {searchResults.filter((book: any) => {
                             if (selectedCategory === '전체') return true;
-                            // 알라딘의 카테고리 구조(예: 국내도서>분류>...)에 우리가 누른 카테고리 단어가 포함되어 있으면 보여주기!
                             return book.categoryName && book.categoryName.includes(selectedCategory);
                         }).map((book: any) => (
                             <div key={book.itemId} className="search-result-card">
@@ -132,7 +132,7 @@ function Searchpage() {
                                     <p className="book-rating">⭐ {book.customerReviewRank}</p>
                                 </div>
                                 <div className="book-actions">
-                                    <button className="btn-add-library" onClick={() => setIsModalOn(true)}>서재에 담기</button>
+                                    <button className="btn-add-library" onClick={() => { setIsModalOn(true); setSelectedBook(book) }}>서재에 담기</button>
                                     <button className="btn-view-details">상세 보기</button>
                                 </div>
                             </div>

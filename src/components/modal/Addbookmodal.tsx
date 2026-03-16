@@ -1,32 +1,90 @@
 import { useState } from 'react';
+import { supabase } from '../../supabase';
 import './Addbookmodal.css';
 
 interface AddBookModalProps {
     onClose: () => void;
+    book: any;
 }
 
-function Addbookmodal({ onClose }: AddBookModalProps) {
-    // 읽기 상태를 관리하는 state (기본값: 'reading')
+const UUID = '77e29bf2-9409-4ef5-94aa-5bfdd2d6a0a3';
+
+function Addbookmodal({ onClose, book }: AddBookModalProps) {
+
     const [readingStatus, setReadingStatus] = useState('reading');
 
+    const handleAddMyLibrary = async () => {
+        let mappedStatus = '읽는 중';
+        if (readingStatus == 'todo') mappedStatus = '읽을 예정'
+        if (readingStatus == 'done') mappedStatus = '읽음'
+
+        try {
+            const { data: bookData, error: bookError }
+                = await supabase.from('Books')
+                    .insert([
+                        {
+                            title: book.title,
+                            author: book.author,
+                            publisher: book.publisher,
+                            img: book.cover,
+                            genre: book.categoryName || '기타',
+                            total_pages: book.subInfo?.itemPage || 0
+                        }
+                    ])
+                    .select();
+
+            if (bookError) {
+                throw bookError;
+            }
+
+            const insertedBookId = bookData[0].book_id;
+
+            // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
+            const today = new Date().toISOString().split('T')[0];
+
+            let insertData: any = {
+                user_id: UUID,
+                book_id: insertedBookId,
+                status: mappedStatus
+            };
+
+            // 읽는 중이면 시작일을 오늘로, 다 읽었으면 종료일을 오늘로 지정
+            if (mappedStatus === '읽는 중') {
+                insertData.start_date = today;
+            } else if (mappedStatus === '읽음a') {
+                insertData.end_date = today;
+            }
+
+            const { error: libraryError } = await supabase.from('MyLibrary')
+                .insert([insertData])
+                .select();
+
+            if (libraryError) throw libraryError;
+
+            alert(`서재에 ${bookData[0].title}이(가) 담겼습니다.`);
+            onClose();
+        } catch (error) {
+            console.log("handleAddMyLibrary in Addbookmodal 오류 : ", error)
+        }
+    }
 
     return (
         <div className='modal-backdrop'>
             <div className='modal-content'>
                 <div className='modal-header'>
                     <h2>서재에 담기</h2>
-                    <button className='close-btn'  onClick={onClose}>✕</button>
+                    <button className='close-btn' onClick={onClose}>✕</button>
                 </div>
 
                 <div className='modal-book-preview'>
                     <div className='preview-cover'>
-                        <span className='no-image'>이미지 없음</span>
+                        <img src={book.cover} alt={book.title} style={{ width: '100%', height: '100%' }} />
                     </div>
                     <div className='preview-info'>
-                        <h3 className='preview-title'>불편한 편의점</h3>
-                        <p className='preview-author'>김호연</p>
-                        <p className='preview-meta'>2021 · 소설 · 나무옆의자</p>
-                        <p className='preview-rating'>⭐ 4.2 · 237페이지</p>
+                        <h3 className='preview-title'>{book.title}</h3>
+                        <p className='preview-author'>{book.author}</p>
+                        <p className='preview-meta'>{book.pubDate ? book.pubDate.substring(0, 4) : ''} · {book.categoryName} · {book.publisher}</p>
+                        <p className='preview-rating'>⭐ {book.customerReviewRank} {book.subInfo?.itemPage ? `· ${book.subInfo.itemPage}페이지` : ''}</p>
                     </div>
                 </div>
 
@@ -97,7 +155,7 @@ function Addbookmodal({ onClose }: AddBookModalProps) {
 
                 <div className='modal-actions'>
                     <button className='btn-cancel' onClick={onClose}>취소</button>
-                    <button className='btn-submit'>서재에 담기</button>
+                    <button className='btn-submit' onClick={handleAddMyLibrary}>서재에 담기</button>
                 </div>
             </div>
         </div>

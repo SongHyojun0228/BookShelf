@@ -1,13 +1,41 @@
 import { useState } from 'react';
+import { supabase } from '../../supabase';
 import './Reviewmodal.css';
 
 interface ReviewModalProps {
     onClose: () => void;
+    book: any;
 }
 
-function Reviewmodal({ onClose }: ReviewModalProps) {
+const UUID = '77e29bf2-9409-4ef5-94aa-5bfdd2d6a0a3';
+
+function Reviewmodal({ onClose, book }: ReviewModalProps) {
 
     const [stars, setStars] = useState(0);
+    const [inputTextReview, setInputTextReview] = useState('');
+
+    const handleAddReview = async () => {
+        try {
+            const { error: bookError }
+                = await supabase.from('Reviews')
+                    .insert([{
+                        user_id: UUID,
+                        book_id: book.book_id,
+                        description: inputTextReview,
+                        star: stars
+                    }])
+
+            if (bookError) {
+                throw bookError;
+            }
+
+            console.log("리뷰 쓰기 함수 발동!!!!!")
+            alert(`${book.title} 리뷰 작성 완료~!`)
+            onClose();
+        } catch (error) {
+            console.log("리뷰 작성 중 오류 : ", error);
+        }
+    }
 
     return (
         <div className='modal-backdrop'>
@@ -19,12 +47,12 @@ function Reviewmodal({ onClose }: ReviewModalProps) {
 
                 <div className='modal-book-preview review-book-preview'>
                     <div className='preview-cover'>
-                        <span className='no-image'>이미지<br />없음</span>
+                        <img src={book.img} alt={book.title} style={{ width: '100%', height: '100%' }} />
                     </div>
                     <div className='preview-info'>
-                        <h3 className='preview-title'>불편한 편의점</h3>
-                        <p className='preview-author'>김호연</p>
-                        <p className='preview-meta'>2021 · 소설 · 나무옆의자 · 237쪽</p>
+                        <h3 className='preview-title'>{book.title}</h3>
+                        <p className='preview-author'>{book.author}</p>
+                        <p className='preview-meta'>{book.pubDate} · {book.genre} · {book.publisher}</p>
                     </div>
                 </div>
 
@@ -56,6 +84,8 @@ function Reviewmodal({ onClose }: ReviewModalProps) {
                         <textarea
                             placeholder="이 책을 읽고 느낀 점을 자유롭게 작성해주세요."
                             maxLength={500}
+                            value={inputTextReview}
+                            onChange={(e) => setInputTextReview(e.target.value)}
                         />
                         <div className="char-count">
                             0 / 500자
@@ -96,7 +126,7 @@ function Reviewmodal({ onClose }: ReviewModalProps) {
 
                 <div className='modal-actions review-actions'>
                     <button className='btn-cancel' onClick={onClose}>취소</button>
-                    <button className='btn-submit' onClick={onClose}>✍️ 리뷰 등록</button>
+                    <button className='btn-submit' onClick={handleAddReview}>✍️ 리뷰 등록</button>
                 </div>
             </div>
         </div>
