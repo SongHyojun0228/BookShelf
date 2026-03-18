@@ -1,6 +1,6 @@
 .myshelf-page {
     flex-grow: 1;
-    height: 100vh;
+    min-height: 100vh;
     overflow-y: auto;
     padding: 2rem 3rem;
     display: flex;
@@ -8,6 +8,14 @@
     gap: 1.5rem;
     box-sizing: border-box;
     width: calc(100% - 250px);
+}
+
+@media (max-width: 1024px) {
+    .myshelf-page {
+        padding: 1.5rem;
+        width: 100%;
+        margin-left: 0;
+    }
 }
 
 .myshelf-header h1 {
@@ -96,8 +104,14 @@
 
 .myshelf-book-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .myshelf-book-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .myshelf-book-card {
@@ -116,14 +130,23 @@
 }
 
 .myshelf-book-card .book-cover {
-    width: 90px;
-    height: 130px;
+    width: 95px;
+    height: 140px;
+    flex-shrink: 0;
     background-color: var(--almond-cream);
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
     border: 1px solid var(--dusty-taupe);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .myshelf-book-card .no-image {
@@ -272,4 +295,25 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
+}
+
+@media (max-width: 768px) {
+    .myshelf-stats-container {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .myshelf-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .myshelf-controls .search-form {
+        max-width: 100%;
+    }
+    
+    .category-filters {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
 }

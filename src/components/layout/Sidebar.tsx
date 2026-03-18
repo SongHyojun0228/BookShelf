@@ -11,7 +11,7 @@ function Sidebar() {
                 <Link to='/search' className="side-bar-items">도서 검색</Link>
                 <Link to='/library' className="side-bar-items">내 서재</Link>
                 <Link to='/' className="side-bar-items">독서 통계</Link>
-                <Link to='/' className="side-bar-items">커뮤니티</Link>
+                <Link to='/community' className="side-bar-items">커뮤니티</Link>
                 <Link to='/' className="side-bar-items">프로필</Link>
                 <div className="side-bar-items">
                     <img alt='프로필 사진' />

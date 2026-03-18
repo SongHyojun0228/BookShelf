@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Sidebar from '../../components/layout/Sidebar';
 import Reviewmodal from '../../components/modal/Reviewmodal';
+import StatusModal from '../../components/modal/StatusModal';
 import '../../App.css';
 import './Myshelf.css';
 import { supabase } from '../../supabase';
@@ -12,107 +13,61 @@ function Myshelf() {
     const [selectedTab, setSelectedTab] = useState('읽는 중');
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [isReviewModalOn, setIsReviewModalOn] = useState(false);
+    const [isStatusModalOn, setIsStatusModalOn] = useState(false);
     const [myBooks, setMyBooks] = useState<any[]>([]);
     const [inputText, setInputText] = useState('');
 
-    const UUID = '77e29bf2-9409-4ef5-94aa-5bfdd2d6a0a3';
+    const UUID = '6a5f62b1-fc4a-4068-9b01-760d8a1fd597';
 
     const [totalBook, setTotalBook] = useState(0);
     const [willReadBook, setWillReadBook] = useState(0);
     const [readingBook, setReadingBook] = useState(0);
     const [readBook, setReadBook] = useState(0);
     const [selectedBook, setSelectedBook] = useState<any>(null);
+    const [selectedLibraryItem, setSelectedLibraryItem] = useState<any>(null);
+
+    const listMyBooks = useCallback(async () => {
+        try {
+            const { data, error }
+                = await supabase.from('MyLibrary')
+                    .select(`
+                    *,
+                    Books (
+                        *
+                    )
+                `)
+                    .eq('user_id', UUID);
+
+            if (error) throw error;
+
+            if (data) {
+                // progress 계산로직 (DB에 없을 경우 대비)
+                const processedData = data.map((item: any) => ({
+                    ...item,
+                    progress: item.Books?.total_pages > 0
+                        ? Math.round((item.current_page / item.Books.total_pages) * 100)
+                        : 0,
+                    currentPage: item.current_page,
+                    totalPages: item.Books?.total_pages || 0
+                }));
+                setMyBooks(processedData);
+                setTotalBook(processedData.length);
+
+                // 각 상태별 카운트 계산
+                setWillReadBook(processedData.filter(b => b.status === '읽을 예정').length);
+                setReadingBook(processedData.filter(b => b.status === '읽는 중').length);
+                setReadBook(processedData.filter(b => b.status === '읽음').length);
+            }
+
+            console.log("불러온 데이터 : ", data);
+        } catch (error) {
+            console.log("내 서재 불러오기 에러 : ", error);
+        }
+    }, [UUID]);
 
     useEffect(() => {
-        const listMyBooks = async () => {
-            try {
-                const { data, error }
-                    = await supabase.from('MyLibrary')
-                        .select(`
-                        *,
-                        Books (
-                            *
-                        )
-                    `)
-                        .eq('user_id', UUID);
-
-                if (error) throw error;
-
-                if (data) {
-                    setMyBooks(data);
-                    setTotalBook(data.length);
-                }
-
-                console.log("불러온 데이터 : ", data);
-                countWillReadBook();
-                countReadingBook();
-                countReadBook();
-            } catch (error) {
-                console.log("내 서재 불러오기 에러 : ", error);
-            }
-        };
-
-        const countWillReadBook = async () => {
-            try {
-                const { data, error }
-                    = await supabase.from('MyLibrary')
-                        .select(`
-                            *,
-                            Books(
-                                *
-                            )    
-                        `).eq('status', '읽을 예정')
-
-                if (error) throw error;
-
-                if (data) setWillReadBook(data.length);
-            } catch (error) {
-                console.log("읽을 예정 책 수 불러오기 에러 : ", error)
-            }
-        }
-
-        const countReadingBook = async () => {
-            try {
-                const { data, error }
-                    = await supabase.from('MyLibrary')
-                        .select(`
-                            *,
-                            Books(
-                                *
-                            )    
-                        `).eq('status', '읽는 중')
-
-                if (error) throw error;
-
-                if (data) setReadingBook(data.length);
-            } catch (error) {
-                console.log("읽는 중 책 수 불러오기 에러 : ", error)
-            }
-        }
-
-
-        const countReadBook = async () => {
-            try {
-                const { data, error }
-                    = await supabase.from('MyLibrary')
-                        .select(`
-                            *,
-                            Books(
-                                *
-                            )    
-                        `).eq('status', '읽음')
-
-                if (error) throw error;
-
-                if (data) setReadBook(data.length);
-            } catch (error) {
-                console.log("읽음 책 수 불러오기 에러 : ", error)
-            }
-        }
-
-
         listMyBooks();
-    }, []);
+    }, [listMyBooks]);
 
 
     return (
@@ -120,6 +75,7 @@ function Myshelf() {
             <Sidebar />
 
             {isReviewModalOn ? <Reviewmodal onClose={() => setIsReviewModalOn(false)} book={selectedBook} /> : null}
+            {isStatusModalOn ? <StatusModal onClose={() => setIsStatusModalOn(false)} libraryItem={selectedLibraryItem} onUpdate={listMyBooks} /> : null}
 
             <div className='main-page myshelf-page'>
                 <header className="myshelf-header">
@@ -211,7 +167,10 @@ function Myshelf() {
                                         setIsReviewModalOn(true);
                                         setSelectedBook(book.Books);
                                     }}>리뷰 쓰기</button>
-                                    <button className="btn-change-status">상태 변경</button>
+                                    <button className="btn-change-status" onClick={() => {
+                                        setSelectedLibraryItem(book);
+                                        setIsStatusModalOn(true);
+                                    }}>상태 변경</button>
                                 </div>
                             </div>
                         ))}

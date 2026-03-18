@@ -7,16 +7,19 @@ interface ReviewModalProps {
     book: any;
 }
 
-const UUID = '77e29bf2-9409-4ef5-94aa-5bfdd2d6a0a3';
+const UUID = '6a5f62b1-fc4a-4068-9b01-760d8a1fd597';
 
 function Reviewmodal({ onClose, book }: ReviewModalProps) {
 
     const [stars, setStars] = useState(0);
     const [inputTextReview, setInputTextReview] = useState('');
+    const [transcriptionInput, setTranscriptionInput] = useState('');
+    const [transcriptionList, setTranscriptionList] = useState<string[]>([]);
 
     const handleAddReview = async () => {
         try {
-            const { error: bookError }
+            // 1. 리뷰 저장
+            const { error: reviewError }
                 = await supabase.from('Reviews')
                     .insert([{
                         user_id: UUID,
@@ -25,16 +28,39 @@ function Reviewmodal({ onClose, book }: ReviewModalProps) {
                         star: stars
                     }])
 
-            if (bookError) {
-                throw bookError;
+            if (reviewError) throw reviewError;
+
+            // 2. 필사 목록 저장 (있을 경우에만)
+            if (transcriptionList.length > 0) {
+                const transcriptionData = transcriptionList.map(item => ({
+                    user_id: UUID,
+                    book_id: book.book_id,
+                    description: item
+                }));
+
+                const { error: transError } = await supabase
+                    .from('Transcriptions')
+                    .insert(transcriptionData);
+
+                if (transError) throw transError;
             }
 
-            console.log("리뷰 쓰기 함수 발동!!!!!")
-            alert(`${book.title} 리뷰 작성 완료~!`)
+            console.log("리뷰 및 필사 저장 완료!!!!!")
+            alert(`${book.title} 리뷰와 필사가 등록되었습니다.`)
             onClose();
         } catch (error) {
-            console.log("리뷰 작성 중 오류 : ", error);
+            console.log("리뷰 저장 중 오류 : ", error);
         }
+    }
+
+    const handleAddTranscription = () => {
+        if (!transcriptionInput.trim()) return;
+        setTranscriptionList([...transcriptionList, transcriptionInput]);
+        setTranscriptionInput('');
+    }
+
+    const handleRemoveTranscription = (index: number) => {
+        setTranscriptionList(transcriptionList.filter((_, i) => i !== index));
     }
 
     return (
@@ -65,7 +91,9 @@ function Reviewmodal({ onClose, book }: ReviewModalProps) {
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <button
                                     key={star}
-                                    className='star-btn'
+                                    className={
+                                        `star-btn ${star <= stars ? 'active' : ''}`
+                                    }
                                     onClick={() => setStars(star)}
                                 >
                                     ★
@@ -88,9 +116,36 @@ function Reviewmodal({ onClose, book }: ReviewModalProps) {
                             onChange={(e) => setInputTextReview(e.target.value)}
                         />
                         <div className="char-count">
-                            0 / 500자
+                            {inputTextReview.length} / 500자
                         </div>
                     </div>
+                </div>
+
+                <div className='review-section'>
+                    <div className="review-label">
+                        🔖 필사 (기억하고 싶은 문장)
+                    </div>
+                    <div className="transcription-input-group">
+                        <input
+                            type="text"
+                            placeholder="명대사나 인상 깊은 문장을 적어주세요."
+                            value={transcriptionInput}
+                            onChange={(e) => setTranscriptionInput(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleAddTranscription()}
+                        />
+                        <button className="btn-add-trans" onClick={handleAddTranscription}>추가</button>
+                    </div>
+
+                    {transcriptionList.length > 0 && (
+                        <ul className="transcription-list">
+                            {transcriptionList.map((item, index) => (
+                                <li key={index} className="transcription-item">
+                                    <span className="trans-text">"{item}"</span>
+                                    <button className="btn-remove-trans" onClick={() => handleRemoveTranscription(index)}>✕</button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
 
                 <div className='review-section review-bottom-section'>
