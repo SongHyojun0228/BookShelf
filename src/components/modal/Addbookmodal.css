@@ -236,3 +236,112 @@
 .btn-submit:hover {
     background-color: var(--blushed-brick);
 }
+
+/* 리뷰 리스트 섹션 전체 컨테이너 */
+.modal-review-list {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 5px 10px 0;
+    margin-top: 10px;
+}
+
+/* 프리미엄 리뷰 카드 */
+.modal-review-card {
+    display: flex;
+    gap: 12px;
+    background: #ffffff;
+    border: 1px solid #f0f0f0;
+    padding: 16px;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.modal-review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    border-color: var(--almond-cream);
+}
+
+/* 아바타 스타일 */
+.mini-avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--almond-cream), var(--dusty-taupe));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.card-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.modal-review-card .user-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--mauve-bark);
+}
+
+.modal-review-card .review-date {
+    font-size: 0.75rem;
+    color: var(--dusty-taupe);
+}
+
+.modal-review-card .stars {
+    color: #FFD700;
+    font-size: 0.8rem;
+    letter-spacing: -1px;
+}
+
+/* 리뷰 텍스트 (인용구 스타일) */
+.modal-review-card .review-text {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.6;
+    margin: 0;
+    font-style: italic;
+    white-space: pre-wrap;
+}
+
+/* 비어있을 때 스타일 */
+.empty-reviews {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--dusty-taupe);
+    background-color: #fafafa;
+    border-radius: 16px;
+    border: 1px dashed #e0e0e0;
+    font-size: 0.9rem;
+}
+
+.modal-review-list::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-review-list::-webkit-scrollbar-thumb {
+    background-color: var(--dusty-taupe);
+    border-radius: 10px;
+}

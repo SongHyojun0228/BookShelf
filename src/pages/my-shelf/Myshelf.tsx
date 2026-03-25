@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import Loading from '../../components/common/Loading';
 import Sidebar from '../../components/layout/Sidebar';
 import Reviewmodal from '../../components/modal/Reviewmodal';
 import StatusModal from '../../components/modal/StatusModal';
@@ -10,6 +11,7 @@ import { supabase } from '../../supabase';
 const MOCK_CATEGORIES = ['전체', '자기계발', '소설', '과학', '에세이'];
 
 function Myshelf() {
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedTab, setSelectedTab] = useState('읽는 중');
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [isReviewModalOn, setIsReviewModalOn] = useState(false);
@@ -28,6 +30,7 @@ function Myshelf() {
 
     const listMyBooks = useCallback(async () => {
         try {
+            setIsLoading(true);
             const { data, error }
                 = await supabase.from('MyLibrary')
                     .select(`
@@ -62,6 +65,8 @@ function Myshelf() {
             console.log("불러온 데이터 : ", data);
         } catch (error) {
             console.log("내 서재 불러오기 에러 : ", error);
+        } finally {
+            setIsLoading(false);
         }
     }, [UUID]);
 
@@ -126,7 +131,9 @@ function Myshelf() {
                 </div>
 
                 <div className="myshelf-book-grid">
-                    {myBooks.filter((book => {
+                    {isLoading ? <div style={{ marginTop: '50px' }}>
+                        <Loading text="내 서재 v" />
+                    </div> : myBooks.filter((book => {
                         return book.Books.title.includes(inputText) || book.Books.author.includes(inputText) || book.Books.publisher.includes(inputText);
                     }))
                         .filter((book) => {

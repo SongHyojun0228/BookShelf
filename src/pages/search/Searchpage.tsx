@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
 
 import Sidebar from '../../components/layout/Sidebar';
@@ -9,6 +10,7 @@ import './Searchpage.css'
 export const MOCK_CATEGORIES = ['전체', '소설', '자기계발', '과학', '역사', '경제', '에세이', '인문'];
 
 function Searchpage() {
+    const navigate = useNavigate();
 
     const [keyword, setKeyword] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -28,7 +30,7 @@ function Searchpage() {
 
     useEffect(() => {
         if (page > 1) {
-            fetchBooks(page, false); // false = 기존 목록 유지하면서 이어붙이기
+            fetchBooks(page, false);
         }
     }, [page]);
 
@@ -133,7 +135,7 @@ function Searchpage() {
                                 </div>
                                 <div className="book-actions">
                                     <button className="btn-add-library" onClick={() => { setIsModalOn(true); setSelectedBook(book) }}>서재에 담기</button>
-                                    <button className="btn-view-details">상세 보기</button>
+                                    <button className="btn-view-details" onClick={() => navigate(`/book/${book.itemId}`)}>상세 보기</button>
                                 </div>
                             </div>
                         ))}

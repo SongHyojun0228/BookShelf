@@ -244,18 +244,72 @@
 
 .trending-item {
     display: flex;
-    gap: 0.8rem;
+    gap: 1rem;
     align-items: center;
+    padding: 0.8rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
 }
 
-.trending-item .rank {
-    font-weight: bold;
-    color: var(--blood-red);
-    font-size: 1.1rem;
-    width: 20px;
+.trending-item:hover {
+    background-color: var(--almond-cream);
+    transform: translateX(5px);
 }
 
-.trending-item .title {
+.rank {
+    font-weight: 900;
+    font-size: 1.2rem;
+    width: 24px;
+    text-align: center;
+}
+
+.rank-1 { color: #f1c40f; font-size: 1.5rem; }
+.rank-2 { color: #95a5a6; }
+.rank-3 { color: #e67e22; }
+.rank:not(.rank-1):not(.rank-2):not(.rank-3) { color: var(--dusty-taupe); }
+
+.trending-book-cover {
+    width: 45px;
+    height: 65px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.trending-book-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.trending-book-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    overflow: hidden;
+}
+
+.trending-book-info .title {
     font-size: 0.95rem;
+    font-weight: bold;
     color: var(--mauve-bark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trending-book-info .author {
+    font-size: 0.8rem;
+    color: var(--dusty-taupe);
+}
+
+.shelf-count {
+    font-size: 0.75rem;
+    color: var(--blood-red);
+    background-color: var(--almond-cream);
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
 }

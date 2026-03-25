@@ -1,33 +1,46 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../supabase';
+import Loading from '../../components/common/Loading';
 import Sidebar from '../../components/layout/Sidebar';
+import Addbookmodal from '../../components/modal/Addbookmodal';
+import ReviewDetailModal from '../../components/modal/ReviewDetailModal';
 import './Community.css';
-
-const MOCK_DATA: Record<string, any[]> = {
-    '팔로잉 피드': [
-        { id: 1, user: '감자조림', activity: '새 책을 서재에 담았어요', book: '파친코 — 이민진', content: '', time: '방금 전', likes: 12 },
-        { id: 3, user: '책벌레진', activity: '책을 다 읽었어요!', book: '아토믹 해빗 — 제임스 클리어', content: '', time: '5시간 전', likes: 12 },
-    ],
-    '인기 리뷰': [
-        { id: 2, user: '독서왕', activity: '리뷰를 남겼어요', book: '역행자 — 자청', content: '자기계발서 중 가장 현실적인 조언. 특히 3장의...', time: '5분 전', likes: 45 },
-        { id: 5, user: '무지개', activity: '리뷰를 남겼어요', book: '슬램덩크 — 이노우에 다케히코', content: '왼손은 거들 뿐... 제 인생 최고의 만화입니다.', time: '2시간 전', likes: 38 },
-    ],
-    '최신 리뷰': [
-
-    ]
-};
 
 const UUID = '6a5f62b1-fc4a-4068-9b01-760d8a1fd597';
 
 function Community() {
 
+    const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('팔로잉 피드');
-
+    const [popularBooks, setPopularBooks] = useState<any[]>([]);
+    const [selectedBook, setSelectedBook] = useState<any>(null);
+    const [isOnAddBookModal, setIsOnAddBookModal] = useState(false);
     const [recentReviews, setRecentReviews] = useState<any[]>([]);
     const [followingReviews, setFollowingReviews] = useState<any[]>([]);
     const [popularReviews, setPopularReviews] = useState<any[]>([]);
+    const [isOnReviewDetailModal, setIsOnReviewDetailModal] = useState(false);
+    const [selectedReview, setSelectedReview] = useState<any>(null);
 
     useEffect(() => {
+        const handlePopularBooks = async () => {
+            try {
+                setIsLoading(true)
+                const { data: popularBooks, error: popularBookError }
+                    = await supabase.from('popular_books')
+                        .select(`*`)
+                        .limit(5);
+
+                if (popularBookError) throw popularBookError;
+
+                setPopularBooks(popularBooks);
+            } catch (error) {
+                console.log("인기도서 에러 : ", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+
         const handleRecentReview = async () => {
             try {
                 const { data, error }
@@ -109,6 +122,7 @@ function Community() {
             }
         }
 
+        handlePopularBooks();
         handleRecentReview();
         handleFollowReview();
         handleManyLikesReviews();
@@ -117,6 +131,8 @@ function Community() {
     return (
         <div className='total-page'>
             <Sidebar />
+            {isOnAddBookModal ? <Addbookmodal onClose={() => setIsOnAddBookModal(false)} book={selectedBook} /> : null}
+            {isOnReviewDetailModal ? <ReviewDetailModal onClose={() => setIsOnReviewDetailModal(false)} review={selectedReview} /> : null}
 
             <div className='main-page community-page'>
                 <div className='community-content'>
@@ -140,49 +156,47 @@ function Community() {
                     </div>
 
                     <div className="feed-container">
-                        {(activeTab === '최신 리뷰' ? recentReviews : (activeTab === '팔로잉 피드' ? followingReviews : (activeTab === '인기 리뷰' ? popularReviews : MOCK_DATA[activeTab]))).map((item) => {
-                            const isDBData = activeTab === '최신 리뷰' || activeTab === '팔로잉 피드' || activeTab === '인기 리뷰';
-                            return (
-                                <div key={item.review_id || item.id} className="feed-item">
+                        {isLoading ? <div style={{ marginTop: '50px' }}>
+                            <Loading text="리뷰 / 추천유저 / 인기도서" />
+                        </div> :
+                            (activeTab === '최신 리뷰' ? recentReviews : (activeTab === '팔로잉 피드' ? followingReviews : popularReviews)).map((item) => (
+                                <div key={item.review_id} className="feed-item" onClick={() => { setSelectedReview(item); setIsOnReviewDetailModal(true); }}>
                                     <div className="user-avatar">
                                         <div className="avatar-placeholder">
-                                            {isDBData ? item.Users?.nickname?.[0] : item.user?.[0]}
+                                            {item.Users?.nickname?.[0]}
                                         </div>
                                     </div>
                                     <div className="feed-content">
                                         <div className="feed-header">
                                             <span className="user-name">
-                                                {isDBData ? item.Users?.nickname : item.user}
+                                                {item.Users?.nickname}
                                             </span>
                                             <span className="activity-type">
-                                                {isDBData ? '님이 리뷰를 남겼어요' : item.activity}
+                                                님이 리뷰를 남겼어요
                                             </span>
                                             <div className="feed-stats">
-                                                <span className="star-rating">⭐ {isDBData ? item.star : '목데이터'}</span>
+                                                <span className="star-rating">⭐ {item.star}</span>
                                                 <span className="heart-icon">
-                                                    ❤️ {isDBData ? (item.likes_count ?? 0) : item.likes}
+                                                    ❤️ {item.likes_count ?? 0}
                                                 </span>
                                             </div>
                                         </div>
                                         <div className="book-summary">
                                             <span className="book-info-text">
-                                                {isDBData ? `${item.Books?.title} — ${item.Books?.author}` : item.book}
+                                                {item.Books?.title} — {item.Books?.author}
                                             </span>
                                         </div>
                                         <p className="review-text">
-                                            "{isDBData ? item.description : item.content}"
+                                            "{item.description}"
                                         </p>
                                         <div className="feed-footer">
                                             <span className="time-ago">
-                                                {isDBData
-                                                    ? new Date(item.created_at).toLocaleDateString()
-                                                    : item.time}
+                                                {new Date(item.created_at).toLocaleDateString()}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            ))}
                     </div>
                 </div>
 
@@ -209,16 +223,21 @@ function Community() {
                     </section>
 
                     <section className="trending-section">
-                        <h3>📈 인기 도서</h3>
+                        <h3>🔥 실시간 인기 도서</h3>
                         <div className="trending-list">
-                            {[
-                                { rank: 1, title: '불편한 편의점' },
-                                { rank: 2, title: '역행자' },
-                                { rank: 3, title: '아토믹 해빗' }
-                            ].map((item) => (
-                                <div key={item.rank} className="trending-item">
-                                    <span className="rank">{item.rank}</span>
-                                    <span className="title">{item.title}</span>
+                            {popularBooks.map((book, index) => (
+                                <div key={book.book_id} className="trending-item" onClick={() => { setIsOnAddBookModal(true); setSelectedBook(book) }}>
+                                    <span className={`rank rank-${index + 1}`}>{index + 1}</span>
+                                    <div className="trending-book-cover">
+                                        <img src={book.img} alt={book.title} />
+                                    </div>
+                                    <div className="trending-book-info">
+                                        <span className="title">{book.title}</span>
+                                        <span className="author">{book.author}</span>
+                                        <span className="shelf-count">
+                                            📚 {book.shelf_count}명이 담았어요
+                                        </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>

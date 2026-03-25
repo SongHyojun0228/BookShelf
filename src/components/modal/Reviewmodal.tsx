@@ -45,7 +45,7 @@ function Reviewmodal({ onClose, book }: ReviewModalProps) {
                 if (transError) throw transError;
             }
 
-            console.log("리뷰 및 필사 저장 완료!!!!!")
+            console.log("리뷰 저장 완료!!!!!")
             alert(`${book.title} 리뷰와 필사가 등록되었습니다.`)
             onClose();
         } catch (error) {
@@ -55,6 +55,7 @@ function Reviewmodal({ onClose, book }: ReviewModalProps) {
 
     const handleAddTranscription = () => {
         if (!transcriptionInput.trim()) return;
+
         setTranscriptionList([...transcriptionList, transcriptionInput]);
         setTranscriptionInput('');
     }

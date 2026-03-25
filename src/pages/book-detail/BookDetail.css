@@ -1,0 +1,423 @@
+.book-detail-page {
+  padding: 2rem;
+  background-color: #F8F9FA;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+/* Header Card */
+.book-detail-header-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}
+
+.book-profile-content {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Left: Book Cover */
+.book-cover-large {
+  flex: 0 0 200px;
+}
+
+.book-cover-placeholder {
+  width: 100%;
+  height: 280px;
+  background-color: #F0E6FF; /* light purple */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.placeholder-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #4B0082;
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-author {
+  font-size: 0.9rem;
+  color: #4B0082;
+}
+
+/* Center: Information */
+.book-info-center {
+  flex: 1;
+}
+
+.book-title-large {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+.book-author-large {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 0 1rem 0;
+}
+
+.book-rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stars {
+  color: #FFA500;
+  font-size: 1.2rem;
+}
+
+.rating-score {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.review-count {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.book-metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.meta-value {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.book-description {
+  color: #555;
+  line-height: 1.6;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #6C5CE7;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.5rem;
+}
+
+/* Right: Actions & Stats */
+.book-actions-right {
+  flex: 0 0 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-primary-large {
+  background-color: #6C5CE7;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary-large:hover {
+  background-color: #5b4dd4;
+}
+
+.btn-secondary-large {
+  background-color: white;
+  color: #6C5CE7;
+  border: 1px solid #6C5CE7;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary-large:hover {
+  background-color: #f8f6ff;
+}
+
+.status-indicator.reading {
+  background-color: #E3F9E5;
+  color: #2D6A4F;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.statistics-box {
+  background-color: #F8F9FA;
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid #EEE;
+}
+
+.stats-title {
+  font-size: 1rem;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.stats-row:last-child {
+  margin-bottom: 0;
+}
+
+.stats-label {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.stats-value {
+  color: #333;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Middle: Reviews Section */
+.reviews-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.reviews-header h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.reviews-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sort-dropdown {
+  padding: 0.5rem;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  color: #333;
+}
+
+.btn-write-review-small {
+  background-color: #6C5CE7;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-card {
+  border-bottom: 1px solid #EEE;
+  padding-bottom: 1.5rem;
+}
+
+.review-card:last-child {
+  border-bottom: none;
+}
+
+.review-user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  background-color: #DDD;
+  border-radius: 50%;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: bold;
+  color: #333;
+}
+
+.user-rating {
+  color: #FFA500;
+  font-size: 0.9rem;
+}
+
+.review-date {
+  margin-left: auto;
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.review-content {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.review-footer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-like, .btn-comment {
+  background: none;
+  border: 1px solid #DDD;
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.btn-report {
+  margin-left: auto;
+  color: #999;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-load-more {
+  width: 100%;
+  padding: 1rem;
+  background: none;
+  border: 1px solid #DDD;
+  border-radius: 8px;
+  color: #666;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1.5rem;
+}
+
+.btn-load-more:hover {
+  background-color: #F8F9FA;
+}
+
+/* Bottom: Similar Books */
+.similar-books-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.similar-books-section h2 {
+  font-size: 1.25rem;
+  color: #333;
+  margin: 0 0 1.5rem 0;
+}
+
+.similar-books-row {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.similar-book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 120px;
+}
+
+.similar-cover-placeholder {
+  width: 120px;
+  height: 180px;
+  background-color: #EEE;
+  border-radius: 4px;
+}
+
+.similar-book-title {
+  font-size: 0.9rem;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

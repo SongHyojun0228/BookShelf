@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { supabase } from '../../supabase';
 import './Addbookmodal.css';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../supabase';
+import Loading from '../common/Loading';
 
 interface AddBookModalProps {
     onClose: () => void;
@@ -11,7 +12,52 @@ const UUID = '6a5f62b1-fc4a-4068-9b01-760d8a1fd597';
 
 function Addbookmodal({ onClose, book }: AddBookModalProps) {
 
+    const [isLoading, setIsLoading] = useState(true);
     const [readingStatus, setReadingStatus] = useState('reading');
+    const [writtenReviews, setWrittenReviews] = useState<any[]>();
+
+    useEffect(() => {
+        const fetchReviewByBook = async () => {
+            try {
+                setIsLoading(true);
+                let targetBookId = book.book_id;
+
+                if (!targetBookId) {
+                    const { data: existingBook }
+                        = await supabase.from('Books')
+                            .select('book_id')
+                            .eq('title', book.title)
+                            .eq('author', book.author)
+                            .maybeSingle();
+
+                    if (existingBook) {
+                        targetBookId = existingBook.book_id;
+                    }
+                }
+
+                if (targetBookId) {
+                    const { data: reviewByBook, error: reviewByBookError }
+                        = await supabase.from('Reviews')
+                            .select(`
+                                *,
+                                Users(nickname)
+                            `)
+                            .eq('book_id', targetBookId)
+                            .order('created_at', { ascending: false })
+
+                    if (reviewByBookError) throw reviewByBookError;
+
+                    if (reviewByBook) setWrittenReviews(reviewByBook);
+                }
+            } catch (error) {
+                console.log("책 별 리뷰 패치 오류 : ", error);
+            } finally {
+                setIsLoading(false); // 무조건 실행됨
+            }
+        }
+
+        fetchReviewByBook();
+    }, [book]) // book 정보가 바뀔 때마다 다시 실행
 
     const handleAddMyLibrary = async () => {
         let mappedStatus = '읽는 중';
@@ -19,25 +65,39 @@ function Addbookmodal({ onClose, book }: AddBookModalProps) {
         if (readingStatus == 'done') mappedStatus = '읽음'
 
         try {
-            const { data: bookData, error: bookError }
+            const { data: existingBook }
                 = await supabase.from('Books')
-                    .insert([
-                        {
-                            title: book.title,
-                            author: book.author,
-                            publisher: book.publisher,
-                            img: book.cover,
-                            genre: book.categoryName || '기타',
-                            total_pages: book.subInfo?.itemPage || 0
-                        }
-                    ])
-                    .select();
+                    .select('book_id')
+                    .eq('title', book.title)
+                    .eq('author', book.author)
+                    .maybeSingle();
 
-            if (bookError) {
-                throw bookError;
+            let insertedBookId;
+
+            if (existingBook) {
+                insertedBookId = existingBook.book_id
+                console.log('이미 Books Table에 존재하는 책 : ', book.title)
+            } else {
+                const { data: bookData, error: bookError }
+                    = await supabase.from('Books')
+                        .insert([
+                            {
+                                title: book.title,
+                                author: book.author,
+                                publisher: book.publisher,
+                                img: book.cover || book.img,
+                                genre: book.categoryName || '기타',
+                                total_pages: book.subInfo?.itemPage || 0
+                            }
+                        ])
+                        .select();
+
+                if (bookError) {
+                    throw bookError;
+                }
+
+                insertedBookId = bookData[0].book_id;
             }
-
-            const insertedBookId = bookData[0].book_id;
 
             // 오늘 날짜 구하기 (YYYY-MM-DD 형식)
             const today = new Date().toISOString().split('T')[0];
@@ -61,13 +121,23 @@ function Addbookmodal({ onClose, book }: AddBookModalProps) {
 
             if (libraryError) throw libraryError;
 
-            alert(`서재에 ${bookData[0].title}이(가) 담겼습니다.`);
+            alert(`서재에 ${book.title}이(가) 담겼습니다.`);
             onClose();
         } catch (error) {
             console.log("handleAddMyLibrary in Addbookmodal 오류 : ", error)
         }
     }
 
+    if (isLoading) {
+        return (
+            <div className='modal-backdrop'>
+                <div className='modal-content' style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Loading text="리뷰" />
+                </div>
+            </div>
+        );
+    }
+    
     return (
         <div className='modal-backdrop'>
             <div className='modal-content'>
@@ -78,12 +148,12 @@ function Addbookmodal({ onClose, book }: AddBookModalProps) {
 
                 <div className='modal-book-preview'>
                     <div className='preview-cover'>
-                        <img src={book.cover} alt={book.title} style={{ width: '100%', height: '100%' }} />
+                        <img src={book.cover || book.img} alt={book.title} style={{ width: '100%', height: '100%' }} />
                     </div>
                     <div className='preview-info'>
                         <h3 className='preview-title'>{book.title}</h3>
                         <p className='preview-author'>{book.author}</p>
-                        <p className='preview-meta'>{book.pubDate ? book.pubDate.substring(0, 4) : ''} · {book.categoryName} · {book.publisher}</p>
+                        <p className='preview-meta'>{book.pubDate ? book.pubDate.substring(0, 4) : ''} · {book.categoryName || book.genre} · {book.publisher}</p>
                         <p className='preview-rating'>⭐ {book.customerReviewRank} {book.subInfo?.itemPage ? `· ${book.subInfo.itemPage}페이지` : ''}</p>
                     </div>
                 </div>
@@ -150,6 +220,35 @@ function Addbookmodal({ onClose, book }: AddBookModalProps) {
                         <span className='tag-pill'>#소설</span>
                         <span className='tag-pill'>#한국문학</span>
                         <span className='tag-pill'>#베스트셀러</span>
+                    </div>
+                </div>
+
+                <div className='modal-section'>
+                    <div className='section-title'>
+                        <h3>📢 이 책에 남겨진 리뷰 ({writtenReviews?.length || 0})</h3>
+                    </div>
+                    <div className='modal-review-list'>
+                        {writtenReviews && writtenReviews.length > 0 ? (
+                            writtenReviews.map((review) => (
+                                <div key={review.review_id} className='modal-review-card'>
+                                    <div className='card-left'>
+                                        <div className='mini-avatar'>{review.Users?.nickname?.[0]}</div>
+                                    </div>
+                                    <div className='card-right'>
+                                        <div className='card-header'>
+                                            <div className='user-info'>
+                                                <span className='user-name'>{review.Users?.nickname}</span>
+                                                <span className='review-date'>{new Date(review.created_at).toLocaleDateString()}</span>
+                                            </div>
+                                            <span className='stars'>{'★'.repeat(review.star)}</span>
+                                        </div>
+                                        <p className='review-text'>"{review.description}"</p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className='empty-reviews'>아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨보세요!</div>
+                        )}
                     </div>
                 </div>
 
