@@ -5,10 +5,10 @@ import './StatusModal.css';
 interface StatusModalProps {
     onClose: () => void;
     libraryItem: any;
-    onUpdate: () => void;
+    // onUpdate: () => void;
 }
 
-function StatusModal({ onClose, libraryItem, onUpdate }: StatusModalProps) {
+function StatusModal({ onClose, libraryItem }: StatusModalProps) {
     const [status, setStatus] = useState(libraryItem.status);
     const [currentPage, setCurrentPage] = useState(libraryItem.current_page || 0);
     const totalPages = libraryItem.Books?.total_pages || 0;
@@ -36,8 +36,8 @@ function StatusModal({ onClose, libraryItem, onUpdate }: StatusModalProps) {
             if (error) throw error;
 
             alert('독서 상태가 업데이트되었습니다.');
-            onUpdate();
             onClose();
+            window.location.reload();
         } catch (error) {
             console.error('상태 업데이트 오류:', error);
             alert('상태 업데이트 중 오류가 발생했습니다.');

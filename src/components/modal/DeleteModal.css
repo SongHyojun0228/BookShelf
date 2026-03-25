@@ -1,0 +1,83 @@
+.delete-modal-content {
+    background-color: white;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    
+    /* 화면 중앙 배치를 위한 여백 처리 (상위 .modal-backdrop이 display: flex, align-items: center 이면 margin 안줘도 되지만 안전하게) */
+    margin: auto;
+}
+
+.delete-modal-body {
+    padding: 1rem 0;
+    text-align: center;
+    color: var(--mauve-bark);
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.warning-text {
+    font-size: 0.9rem;
+    color: var(--blood-red);
+    margin-top: 15px;
+}
+
+/* 아래 클래스들은 StatusModal과 완전히 동일한 스타일을 적용합니다. */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--mauve-bark);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--dusty-taupe);
+    cursor: pointer;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-cancel,
+.btn-save {
+    flex: 1;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background-color: var(--almond-cream);
+    color: var(--mauve-bark);
+    border: none;
+}
+
+.btn-save {
+    background-color: var(--blood-red);
+    color: white;
+    border: none;
+}
+
+.btn-save:hover {
+    filter: brightness(1.1);
+}

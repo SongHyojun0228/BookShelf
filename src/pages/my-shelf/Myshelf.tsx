@@ -3,6 +3,7 @@ import Loading from '../../components/common/Loading';
 import Sidebar from '../../components/layout/Sidebar';
 import Reviewmodal from '../../components/modal/Reviewmodal';
 import StatusModal from '../../components/modal/StatusModal';
+import DeleteModal from '../../components/modal/DeleteModal';
 import '../../App.css';
 import './Myshelf.css';
 import { supabase } from '../../supabase';
@@ -16,6 +17,7 @@ function Myshelf() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [isReviewModalOn, setIsReviewModalOn] = useState(false);
     const [isStatusModalOn, setIsStatusModalOn] = useState(false);
+    const [isDeleteModalOn, setIsDeleteModalOn] = useState(false);
     const [myBooks, setMyBooks] = useState<any[]>([]);
     const [inputText, setInputText] = useState('');
 
@@ -80,7 +82,13 @@ function Myshelf() {
             <Sidebar />
 
             {isReviewModalOn ? <Reviewmodal onClose={() => setIsReviewModalOn(false)} book={selectedBook} /> : null}
-            {isStatusModalOn ? <StatusModal onClose={() => setIsStatusModalOn(false)} libraryItem={selectedLibraryItem} onUpdate={listMyBooks} /> : null}
+            {isStatusModalOn && selectedLibraryItem ? <StatusModal onClose={() => setIsStatusModalOn(false)} libraryItem={selectedLibraryItem} /> : null}
+            {isDeleteModalOn && selectedBook ? (
+                <DeleteModal
+                    onClose={() => setIsDeleteModalOn(false)}
+                    book={selectedBook}
+                />
+            ) : null}
 
             <div className='main-page myshelf-page'>
                 <header className="myshelf-header">
@@ -132,7 +140,7 @@ function Myshelf() {
 
                 <div className="myshelf-book-grid">
                     {isLoading ? <div style={{ marginTop: '50px' }}>
-                        <Loading text="내 서재 v" />
+                        <Loading text="내 서재" />
                     </div> : myBooks.filter((book => {
                         return book.Books.title.includes(inputText) || book.Books.author.includes(inputText) || book.Books.publisher.includes(inputText);
                     }))
@@ -178,6 +186,12 @@ function Myshelf() {
                                         setSelectedLibraryItem(book);
                                         setIsStatusModalOn(true);
                                     }}>상태 변경</button>
+                                    <button className="btn-delete" style={{ color: '#ff4d4f', border: '1px solid #ff4d4f', padding: '8px 16px', borderRadius: '4px', backgroundColor: 'transparent', cursor: 'pointer', fontSize: '0.85rem' }} onClick={() => {
+                                        setSelectedBook(book.Books);
+                                        setIsDeleteModalOn(true);
+                                    }}>
+                                        삭제
+                                    </button>
                                 </div>
                             </div>
                         ))}
