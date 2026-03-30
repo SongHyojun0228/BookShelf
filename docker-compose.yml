@@ -1,0 +1,15 @@
+services:
+  bookshelf-app:
+    build: .
+    ports:
+      - "5173:5173"
+    # volumes : 내 컴퓨터의 폴더와 컨테이너 안의 폴더가 실시간으로 동기화
+    volumes:
+      - .:/app
+      - /app/node_modules # Important to avoid overwriting node_modules in the container
+    environment:
+      - NODE_ENV=development
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    # Ensure hot reloading works (for some environments/OS types)
+    # Using --host is already in the Dockerfile, but can be redundant here

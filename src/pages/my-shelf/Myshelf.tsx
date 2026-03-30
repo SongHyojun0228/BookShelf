@@ -46,6 +46,13 @@ function Myshelf() {
             if (error) throw error;
 
             if (data) {
+                const { data: reviewData } =
+                    await supabase.from('Reviews')
+                        .select('book_id')
+                        .eq('user_id', UUID);
+
+                const reviewedBookIds = new Set(reviewData?.map(r => r.book_id) || []);
+
                 // progress 계산로직 (DB에 없을 경우 대비)
                 const processedData = data.map((item: any) => ({
                     ...item,
@@ -53,7 +60,8 @@ function Myshelf() {
                         ? Math.round((item.current_page / item.Books.total_pages) * 100)
                         : 0,
                     currentPage: item.current_page,
-                    totalPages: item.Books?.total_pages || 0
+                    totalPages: item.Books?.total_pages || 0,
+                    isReviewed: reviewedBookIds.has(item.book_id)
                 }));
                 setMyBooks(processedData);
                 setTotalBook(processedData.length);
@@ -76,12 +84,11 @@ function Myshelf() {
         listMyBooks();
     }, [listMyBooks]);
 
-
     return (
         <div className='total-page'>
             <Sidebar />
 
-            {isReviewModalOn ? <Reviewmodal onClose={() => setIsReviewModalOn(false)} book={selectedBook} /> : null}
+            {isReviewModalOn ? <Reviewmodal onClose={() => setIsReviewModalOn(false)} book={selectedBook} onSuccess={listMyBooks} /> : null}
             {isStatusModalOn && selectedLibraryItem ? <StatusModal onClose={() => setIsStatusModalOn(false)} libraryItem={selectedLibraryItem} /> : null}
             {isDeleteModalOn && selectedBook ? (
                 <DeleteModal
@@ -178,21 +185,33 @@ function Myshelf() {
                                 </div>
 
                                 <div className="card-actions">
-                                    <button className="btn-review" onClick={() => {
-                                        setIsReviewModalOn(true);
-                                        setSelectedBook(book.Books);
-                                    }}>리뷰 쓰기</button>
+                                    {book.isReviewed ? (
+                                        <button className="btn-edit-review" onClick={() => {
+                                            setIsReviewModalOn(true);
+                                            setSelectedBook(book.Books);
+                                        }}>
+                                            리뷰 수정
+                                        </button>
+                                    ) : (
+                                        <button className="btn-review" onClick={() => {
+                                            setIsReviewModalOn(true);
+                                            setSelectedBook(book.Books);
+                                        }}>리뷰 쓰기</button>
+                                    )}
+
                                     <button className="btn-change-status" onClick={() => {
                                         setSelectedLibraryItem(book);
                                         setIsStatusModalOn(true);
                                     }}>상태 변경</button>
-                                    <button className="btn-delete" style={{ color: '#ff4d4f', border: '1px solid #ff4d4f', padding: '8px 16px', borderRadius: '4px', backgroundColor: 'transparent', cursor: 'pointer', fontSize: '0.85rem' }} onClick={() => {
-                                        setSelectedBook(book.Books);
+
+                                    <button className="btn-delete" onClick={() => {
+                                        setSelectedLibraryItem(book);
                                         setIsDeleteModalOn(true);
                                     }}>
                                         삭제
                                     </button>
                                 </div>
+
                             </div>
                         ))}
                 </div>

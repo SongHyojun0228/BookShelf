@@ -45,6 +45,8 @@ function ReviewDetailModal({ onClose, review }: ReviewDetailModalProps) {
                     .eq('user_id', UUID)
                     .single();
 
+                if(error) throw error;
+
                 if (data) setIsLiked(true);
             } catch (error) {
                 console.log("좋아요 상태 확인 에러 : ", error);

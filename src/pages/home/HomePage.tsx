@@ -39,7 +39,7 @@ function HomePage() {
             <div className='main-page home-page'>
                 <h1>홈</h1>
                 <div className='goal-of-month'>
-                    <h2>이번 달 목표 : 4권 중 2권 달성</h2>
+                    <h2>이번 달 목표 : 4권 중 4권 달성</h2>
                     <p>50%달성 / 이번 달 남은 기간 15일</p>
                     <div className="progress-bar-container">
                         <div className="progress-bar" style={{ width: '50%' }}></div>

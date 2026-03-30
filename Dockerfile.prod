@@ -1,0 +1,41 @@
+# --- STAGE 1 : BUILD STAGE
+# Node 20이 깔린 아주 가벼운 리눅스 알파인을 가져옴
+# AS build : 나중에 2단계에서 결과물만 쏙 빼갈 수 있게 해줌 
+FROM node:20-alpine AS build
+
+# 컨테이너 내부 작업 공간을 /app 폴더로 지정 (이후의 명령어들은 다 여기서 실행)
+WORKDIR /app
+# [핵심] : 소스 코드를 다 복사하기 전에 package.json만 먼저 복사
+#   - 왜? : 종속성(npm install)은 자주 안 바뀌기 때문에, 도커가 이 단계를 캐시(기억)해서 다음에 빌드할 때 빛의 속도로 넘어가게 하기 위함
+COPY package*.json ./
+# 필요한 라이브러리들을 컨테이너 안에 설치 
+RUN npm install
+# 내 컴퓨터 안에 있는 나머지 소스 코드를 컨테이너 안으로 복사
+COPY . .
+
+# --- STAGE 2 : 환경 변수 주입 
+# Vite는 빌드할 때 환경 변수가 코드 안에 심어져야 함
+# ARG : 도커 빌드할 때 --build-arg로 넘겨줄 **'입력 구멍'** 생성
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
+RUN npm run build
+
+# --- STAGE 3 : 실행 (서빙하기) 스테이지
+# 이제 무거운 Node.js는 버리고, 가벼운 Nginx만 남김
+# 이제부터는 Nginx가 깔린 아주 작은 이미지를 사용
+FROM nginx:stable-alpine
+
+# [데브옵스의 꽃] : 아까 build라고 이름 붙인 1단계에서 빌드된 dist 폴더만 현재 Nginx 컨테이너의 웹 서빙 폴더로 복사
+# 이 덕분에 결과 이미지 용량이 엄청나게 작아지는 것 (Node, node_modules 소스 코드 등이 다 버려지기 때문)
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# docker build --build-arg VITE_SUPABASE_URL=https://whvpwobyxmmoechgoziz.supabase.co --build-arg VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndodnB3b2J5eG1tb2VjaGdveml6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMTg1MjAsImV4cCI6MjA4ODc5NDUyMH0.S5C0rXeQfs9XmIq8JmjpQfWyeLhlqcSzfH3zfnXZzLU -f Dockerfile.prod -t bookshelf-prod .
+
+# 80번 포트 개방
+EXPOSE 80
+
+# daemon off : 컨테이너가 종료되지 않고 계속 앞에서 실행되게 만드는 옵션
+CMD ["nginx", "-g", "daemon off;"]
