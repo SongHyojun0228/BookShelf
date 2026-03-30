@@ -28,6 +28,9 @@ RUN npm run build
 # 이제부터는 Nginx가 깔린 아주 작은 이미지를 사용
 FROM nginx:stable-alpine
 
+# 커스텀 Nginx 설정 파일 복사
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # [데브옵스의 꽃] : 아까 build라고 이름 붙인 1단계에서 빌드된 dist 폴더만 현재 Nginx 컨테이너의 웹 서빙 폴더로 복사
 # 이 덕분에 결과 이미지 용량이 엄청나게 작아지는 것 (Node, node_modules 소스 코드 등이 다 버려지기 때문)
 COPY --from=build /app/dist /usr/share/nginx/html
