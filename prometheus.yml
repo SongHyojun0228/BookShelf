@@ -1,0 +1,8 @@
+# 프로메테우스에서 어디서 데이터를 가져와야 하는 지 알려주는 지도 파일
+global:
+  scrape_interval: 5s # 5초마다 데이터 수집
+
+scrape_configs:
+  - job_name: "docker"
+    static_configs:
+      - targets: ["host.docker.internal:9323"] # 도커 데스크탑 직접 연결

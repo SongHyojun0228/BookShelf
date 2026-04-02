@@ -25,6 +25,6 @@ jobs:
           file: ./Dockerfile.prod # 아까 만든 배포용 도커파일 사용
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/bookshelf-prod:latest # 태그 지정
-          build-args: | # 빌드 시 환경 변수 주입
+          build-args: |
             VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
             VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}

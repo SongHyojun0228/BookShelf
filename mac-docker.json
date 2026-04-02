@@ -1,0 +1,35 @@
+{
+  "title": "Mac Docker Engine (Custom Direct)",
+  "uid": "mac_docker",
+  "version": 2,
+  "panels": [
+    {
+      "title": "CPU Cores",
+      "type": "stat",
+      "datasource": {"uid": "ffhojoqm52ww0b", "type": "prometheus"},
+      "gridPos": {"h": 8, "w": 6, "x": 0, "y": 0},
+      "targets": [{"expr": "engine_daemon_engine_cpus_cpus", "refId": "A"}]
+    },
+    {
+      "title": "Running Containers",
+      "type": "stat",
+      "datasource": {"uid": "ffhojoqm52ww0b", "type": "prometheus"},
+      "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0},
+      "targets": [{"expr": "engine_daemon_container_states_containers{state=\"running\"}", "refId": "A"}]
+    },
+    {
+      "title": "Stopped Containers",
+      "type": "stat",
+      "datasource": {"uid": "ffhojoqm52ww0b", "type": "prometheus"},
+      "gridPos": {"h": 8, "w": 6, "x": 12, "y": 0},
+      "targets": [{"expr": "engine_daemon_container_states_containers{state=\"stopped\"}", "refId": "A"}]
+    },
+    {
+      "title": "Container Actions",
+      "type": "timeseries",
+      "datasource": {"uid": "ffhojoqm52ww0b", "type": "prometheus"},
+      "gridPos": {"h": 8, "w": 18, "x": 0, "y": 8},
+      "targets": [{"expr": "rate(engine_daemon_container_actions_seconds_count[1m])", "refId": "A"}]
+    }
+  ]
+}
